@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plant Growth Widget Prototype</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to bottom, #87CEEB, #E0F6FF);
+            min-height: 200vh; /* Make page scrollable */
+            padding: 20px;
+        }
+
+        .content {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            line-height: 1.8;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+
+        p {
+            margin-bottom: 20px;
+            color: #34495e;
+        }
+
+        /* Plant Widget Container */
+        .plant-widget {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: 180px;
+            background: transparent;
+            border-radius: 12px;
+            padding: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Bottom section container - maintains fixed height */
+        .bottom-section {
+            width: 80%;
+            min-height: 25px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Progress Section - Small, positioned below plant */
+        .progress-section {
+            width: 100%;
+            margin-bottom: 0;
+            display: block;
+            visibility: visible;
+            opacity: 1;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .progress-section.hidden {
+            visibility: hidden;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .surprise-text {
+            font-size: 7px;
+            color: #e74c3c;
+            font-weight: bold;
+            margin-bottom: 3px;
+            text-align: center;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 3px;
+            background: #ecf0f1;
+            border-radius: 2px;
+            overflow: hidden;
+            margin-bottom: 2px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(to right, #2ecc71, #27ae60);
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 2px;
+        }
+
+        .progress-text {
+            font-size: 7px;
+            color: #7f8c8d;
+            text-align: center;
+        }
+
+        /* Plant Container - Main attraction, larger */
+        .plant-container {
+            width: 100%;
+            height: 200px;
+            position: relative;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            margin-bottom: 5px;
+        }
+
+        /* Plant Stages - Image-based, larger */
+        .plant-stage {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            pointer-events: none;
+            width: 180px;
+            max-width: 100%;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        .plant-stage.active {
+            opacity: 1;
+        }
+
+        .plant-stage img {
+            display: block;
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+        }
+
+        /* Surprise Button - Small, positioned below plant */
+        .surprise-button {
+            width: 100%;
+            padding: 5px 8px;
+            background: linear-gradient(135deg, #e91e63, #c2185b);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 9px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(233, 30, 99, 0.4);
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: scale(0.8);
+            pointer-events: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .surprise-button.show {
+            opacity: 1;
+            transform: scale(1);
+            pointer-events: all;
+            animation: pulse 2s infinite;
+        }
+
+        .surprise-button:hover {
+            background: linear-gradient(135deg, #c2185b, #ad1457);
+            transform: scale(1.05);
+            box-shadow: 0 6px 15px rgba(233, 30, 99, 0.6);
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                box-shadow: 0 4px 10px rgba(233, 30, 99, 0.4);
+            }
+            50% {
+                box-shadow: 0 4px 20px rgba(233, 30, 99, 0.8);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Main Content -->
+    <div class="content">
+        <h1>Scroll Down to Watch the Plant Grow! 🌱</h1>
+        <p>This is a prototype for a plant growth widget that will become a WordPress plugin. As you scroll down this page, watch the plant in the bottom-left corner grow through different stages.</p>
+        
+        <h2>How It Works</h2>
+        <p>The widget tracks your scroll progress and displays different growth stages:</p>
+        <ul>
+            <li><strong>0-10%:</strong> Seeds in the pot</li>
+            <li><strong>11-25%:</strong> First two leaves appear</li>
+            <li><strong>26-50%:</strong> Second set of leaves</li>
+            <li><strong>51-75%:</strong> Third set of leaves</li>
+            <li><strong>76-89%:</strong> Fourth set of leaves</li>
+            <li><strong>90%+:</strong> Beautiful flower blooms! 🌹</li>
+        </ul>
+
+        <h2>Features</h2>
+        <p>The plant will never shrink - once you reach a stage, it stays at that stage even if you scroll back up. This encourages users to continue scrolling to see the full growth.</p>
+        
+        <p>When the flower blooms at 90% scroll, a surprise button will appear that can link to an external page.</p>
+
+        <h2>More Content</h2>
+        <p>Keep scrolling to see the plant grow! The more you scroll, the more the plant will develop. This creates an engaging experience that encourages users to read through the entire content.</p>
+
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+
+        <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+
+        <h2>Even More Content</h2>
+        <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+
+        <p>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.</p>
+
+        <h2>Keep Scrolling!</h2>
+        <p>You're doing great! The plant is growing with every scroll. Don't stop now - you're getting closer to seeing that beautiful flower bloom!</p>
+
+        <p>Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem.</p>
+
+        <h2>Almost There!</h2>
+        <p>You're making excellent progress! Just a bit more scrolling and you'll see the surprise. The flower is about to bloom!</p>
+
+        <p>Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur.</p>
+
+        <h2>Final Stretch</h2>
+        <p>You're so close! Just a little more scrolling and the beautiful flower will appear, along with a special surprise button!</p>
+
+        <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident.</p>
+
+        <h2>Congratulations!</h2>
+        <p>You've reached the end! If you scrolled all the way down, you should see a beautiful flower in the plant pot, and a surprise button should have appeared!</p>
+
+        <p>This prototype demonstrates the core functionality that will be implemented in the WordPress plugin. The widget will be customizable and can be added to any WordPress site to encourage user engagement and reading.</p>
+
+        <p>@ Main model used: gpt-3.5-turbo. Estimate of about $0.06083 spent on about 3,614 words.</p>
+
+
+        <p>A sprinkle of baking soda around the base of each plant highlights their vitality and resilience. --v 5.2 --ar 16:9</p>
+
+        <p>@ Meta Description: Discover the secret to greener gardens! Learn how baking soda can transform your plants into thriving, lush wonders. Click now for the ultimate plant care guide.</p>
+
+        <h1>Baking Soda For Plants</h1>
+
+        <p>Are you looking for an simple way to enhance the health and growth of your plants? Look no further than baking soda! Yes, that&#039;s right, the same common ingredient you use in your kitchen can work wonders in your garden.</p>
+
+        <p>Baking soda is not only great for baking or cleaning, but it also has numerous benefits for plants. Using baking soda on your plants can improve their overall well-being by providing essential nutrients and balancing the pH levels of the soil.</p>
+
+        <p>It acts as a natural fungicide, preventing diseases like powdery mildew and damping off. Furthermore, it helps repel pests such as aphids and spider mites.</p>
+
+        <p>In this article, we will explore 13 practical uses of baking soda in gardening.</p>
+
+        <p>From boosting plant growth to revitalizing indoor plants, sprinkling baking soda on leaves to mixing it with other remedies – here are some practical tips to improve your gardening results.</p>
+
+        <p>So grab some baking soda and you may notice improvements in your plants!</p>
+
+        <h2>Key Takeaways</h2>
+
+        <ul>
+        <li>Baking soda can enhance the health and growth of plants by providing essential nutrients and balancing pH levels.</li>
+
+        <li>It acts as a natural fungicide, preventing diseases like powdery mildew and damping off.</li>
+
+        <li>Baking soda can repel pests such as aphids and spider mites.</li>
+
+        <li>It can be used to create homemade insect sprays, clean garden equipment, eliminate weeds, and revitalize clay pots.</li>
+
+        </ul>
+
+        <h2>What Is baking soda?</h2>
+
+        <p>Did you know that baking soda is not only great for cleaning, but it can also be used to benefit your plants? Baking soda is a simple and natural product made of sodium bicarbonate.</p>
+
+        <p>It has alkaline properties and when combined with something acidic, it produces carbon dioxide gas. In addition to being an effective cleanser, baking soda can be a useful additive for plants.</p>
+
+        <p>This article section will explore what exactly baking soda is and how it can be contextually relevant for your plants.</p>
+
+        <h2>Is Baking Soda Good for Plants?</h2>
+
+        <p>Will baking soda kill plants? This is a common question among gardeners. The good news is that baking soda doesn&#039;t harm plants and can even be beneficial in preventing fungal diseases.</p>
+
+        <p>While there may be some debate about its effectiveness, applying a solution of baking soda to your plants can provide short-term benefits without any risk of damage.</p>
+
+        <h3 style="color: #FF6900;">Will Baking Soda Kill Plants</h3>
+
+        <p>To ensure the health and vitality of your plants, it is important to consider whether baking soda could potentially harm them.</p>
+
+        <p>While some concerns have been raised about sodium bicarbonate burning plant parts and affecting later plants, no serious buildup has been found. The Federal EPA has cleared sodium bicarbonate as safe for edible plants.</p>
+
+        <p>In fact, baking soda can be a beneficial tool in combating powdery mildew on tomato plants. If you have infected plants, using a baking soda spray can help eliminate the issue effectively and safely.</p>
+
+        <h2>13 Miracles or Uses for Baking Soda in the Garden</h2>
+
+        <p>In your garden, baking soda can be a useful tool with its various uses. You can create a homemade insect spray by mixing baking soda and water to keep pests away from your plants.</p>
+
+        <p>Additionally, baking soda can help clean your garden equipment and even kill weeds. It can also act as a preventative measure against fungal diseases in your garden.</p>
+
+        <h3 style="color: #FF6900;">Baking soda plant insect spray</h3>
+
+        <p>When using baking soda as a plant insect spray, mix 1 tablespoon of baking soda and oil with 2 drops of dawn dishwashing liquid in 1 gallon of water.</p>
+
+        <p>This natural solution offers an way to protect your vegetable garden from harmful insects.</p>
+
+        <p>Here are three reasons why you should try the baking soda plant insect spray: it repels insects effectively, kills them naturally without harming plants, and controls biting and chewing pests that damage your precious garden plants.</p>
+
+        <h3 style="color: #FF6900;">Baking soda for garden pests</h3>
+
+        <p>If you have a problem with cabbage worms in your garden, using baking soda can be an effective solution.</p>
+
+        <p>Baking soda gnat spray is also a great way to get rid of those annoying pests that hover around your plants.</p>
+
+        <p>Additionally, if slugs are causing damage to your garden, applying baking soda can help eliminate them.</p>
+
+        <h4 style="color: #9933FF;">Killing cabbage worms</h4>
+
+        <p>Using a mixture of baking soda and flour is a natural way to eliminate those pesky cabbage worms from your plants. Here&#039;s how it works:</p>
+
+        <ul>
+        <li>The baking soda and flour mixture creates an inhospitable environment for the worms, preventing them from thriving.</li>
+
+        <li>When applied to infected plants, it disrupts the acidic soils that cabbage worms prefer, making it difficult for them to survive.</li>
+
+        <li>Additionally, the baking soda solution alters the ion balance in their bodies and damages fungal cells, further deterring their growth.</li>
+
+        </ul>
+
+        <p>Try this method in your garden beds for effective pest control!</p>
+
+        <h4 style="color: #9933FF;">Baking Soda Gnat Spray</h4>
+
+        <p>To effectively repel gnats, mix a few drops of dish soap, a tablespoon of vinegar, and baking soda with warm water in a spray bottle.</p>
+
+        <p>This baking soda gnat spray is an simple solution for plant lovers. The bicarbonate of soda in the mixture helps to deter gnats while also benefiting your plants.</p>
+
+        <p>Simply give your plants a few sprays of this gnat spray and watch as those pesky bugs stay away.</p>
+
+        <h4 style="color: #9933FF;">Get Rid of Slugs</h4>
+
+        <p>Sprinkle baking soda on the soil, and those slimy slugs will scurry away from your garden. Baking soda acts as a natural repellent, keeping these pests at bay without harming your plants.</p>
+
+        <p>Not only does it deter slugs, but it also helps prevent the spread of fungal spores that can damage your precious greens. Simply mix a teaspoon of baking soda with water and spray it directly on the affected areas for best results.</p>
+
+        <p>Say goodbye to slugs and hello to healthier plants!</p>
+
+        <h4 style="color: #9933FF;">Eliminate Ant Hills</h4>
+
+        <p>Place the mixture of powdered sugar and baking soda near the ant hills, and watch as those pesky mounds crumble away, leaving your surroundings free from their disruptive presence.</p>
+
+        <p>To effectively eliminate ant hills using baking soda, follow these steps:</p>
+
+        <ol>
+        <li>Mix 1 part baking soda with 1 part powdered sugar.</li>
+
+        <li>Dissolve the mixture in 3 quarts of water.</li>
+
+        <li>Pour the solution directly onto the ant hills.</li>
+
+        </ol>
+
+        <p>This method harnesses the power of baking soda to naturally eliminate ant hills and keep your plants thriving.</p>
+
+        <h4 style="color: #9933FF;">Baking Soda Aphid and Mite Spray</h4>
+
+        <p>Now that you&#039;ve learned how baking soda can eliminate ant hills, let&#039;s explore its clear benefits for your plants. By creating a simple solution of baking soda with water, you can effectively get rid of aphids and mites.</p>
+
+        <p>Add a touch of vegetable oil and liquid soap to enhance its effectiveness. Your plants will thank you for this approach to pest control! See the table below for a visual representation:</p>
+
+    
+    
+    </div>
+
+    <!-- Plant Growth Widget -->
+    <div class="plant-widget">
+        <!-- Plant Container -->
+        <div class="plant-container">
+            <!-- Stage 1: 0-7% -->
+            <div class="plant-stage" id="stage1">
+                <img src="Plant stages/plant-stage-1.png" alt="Plant Stage 1">
+            </div>
+
+            <!-- Stage 2: 8-14% -->
+            <div class="plant-stage" id="stage2">
+                <img src="Plant stages/plant-stage-2.png" alt="Plant Stage 2">
+            </div>
+
+            <!-- Stage 3: 15-21% -->
+            <div class="plant-stage" id="stage3">
+                <img src="Plant stages/plant-stage-3.png" alt="Plant Stage 3">
+            </div>
+
+            <!-- Stage 4: 22-28% -->
+            <div class="plant-stage" id="stage4">
+                <img src="Plant stages/plant-stage-4.png" alt="Plant Stage 4">
+            </div>
+
+            <!-- Stage 5: 29-35% -->
+            <div class="plant-stage" id="stage5">
+                <img src="Plant stages/plant-stage-5.png" alt="Plant Stage 5">
+            </div>
+
+            <!-- Stage 6: 36-42% -->
+            <div class="plant-stage" id="stage6">
+                <img src="Plant stages/plant-stage-6.png" alt="Plant Stage 6">
+            </div>
+
+            <!-- Stage 7: 43-49% -->
+            <div class="plant-stage" id="stage7">
+                <img src="Plant stages/plant-stage-7.png" alt="Plant Stage 7">
+            </div>
+
+            <!-- Stage 8: 50-56% -->
+            <div class="plant-stage" id="stage8">
+                <img src="Plant stages/plant-stage-8.png" alt="Plant Stage 8">
+            </div>
+
+            <!-- Stage 9: 57-63% -->
+            <div class="plant-stage" id="stage9">
+                <img src="Plant stages/plant-stage-9.png" alt="Plant Stage 9">
+            </div>
+
+            <!-- Stage 10: 64-70% -->
+            <div class="plant-stage" id="stage10">
+                <img src="Plant stages/plant-stage-10.png" alt="Plant Stage 10">
+            </div>
+
+            <!-- Stage 11: 71-77% -->
+            <div class="plant-stage" id="stage11">
+                <img src="Plant stages/plant-stage-11.png" alt="Plant Stage 11">
+            </div>
+
+            <!-- Stage 12: 78-84% -->
+            <div class="plant-stage" id="stage12">
+                <img src="Plant stages/plant-stage-12.png" alt="Plant Stage 12">
+            </div>
+
+            <!-- Stage 13: 85-91% -->
+            <div class="plant-stage" id="stage13">
+                <img src="Plant stages/plant-stage-13.png" alt="Plant Stage 13">
+            </div>
+
+            <!-- Stage 14: 92-100% (Flower) -->
+            <div class="plant-stage" id="stage14">
+                <img src="Plant stages/plant-stage-14.png" alt="Plant Stage 14 - Flower">
+            </div>
+        </div>
+
+        <!-- Bottom Section - Contains progress bar and button, maintains fixed height -->
+        <div class="bottom-section">
+            <!-- Progress Section - Below plant, hidden when >90% -->
+            <div class="progress-section" id="progressSection">
+                <div class="surprise-text">Surprise loading...</div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="progressBar"></div>
+                </div>
+                <div class="progress-text" id="progressText">0%</div>
+            </div>
+
+            <!-- Surprise Button - Replaces progress bar when >90% -->
+            <button class="surprise-button" id="surpriseButton" onclick="window.open('https://example.com', '_blank')">
+                Surprise! Click Me! 
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Preload all plant stage images for smooth transitions
+        function preloadImages() {
+            const imagePaths = [];
+            for (let i = 1; i <= 14; i++) {
+                imagePaths.push(`Plant stages/plant-stage-${i}.png`);
+            }
+            
+            imagePaths.forEach(path => {
+                const img = new Image();
+                img.src = path;
+            });
+        }
+        
+        // Preload images on page load
+        preloadImages();
+
+        // Track scroll progress and plant growth
+        let maxScrollReached = 0;
+        let currentStage = 0;
+
+        // Reset function to initialize plant state on page load/refresh
+        function resetPlantGrowth() {
+            // Reset variables
+            maxScrollReached = 0;
+            currentStage = 0;
+
+            // Reset progress bar
+            document.getElementById('progressBar').style.width = '0%';
+            document.getElementById('progressText').textContent = '0%';
+
+            // Remove active class from all stages
+            for (let i = 1; i <= 14; i++) {
+                document.getElementById('stage' + i).classList.remove('active');
+            }
+
+            // Show only stage 1 (seeds)
+            document.getElementById('stage1').classList.add('active');
+
+            // Show progress section, hide surprise button
+            const progressSection = document.getElementById('progressSection');
+            const surpriseButton = document.getElementById('surpriseButton');
+            progressSection.classList.remove('hidden');
+            surpriseButton.classList.remove('show');
+        }
+
+        function updatePlantGrowth() {
+            // Calculate scroll percentage
+            const windowHeight = window.innerHeight;
+            const documentHeight = document.documentElement.scrollHeight;
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            const scrollableHeight = documentHeight - windowHeight;
+            const scrollPercentage = scrollableHeight > 0 ? Math.min(100, Math.max(0, (scrollTop / scrollableHeight) * 100)) : 0;
+
+            // Update max scroll reached (plant never shrinks)
+            if (scrollPercentage > maxScrollReached) {
+                maxScrollReached = scrollPercentage;
+            }
+
+            // Update progress bar
+            document.getElementById('progressBar').style.width = maxScrollReached + '%';
+            document.getElementById('progressText').textContent = Math.round(maxScrollReached) + '%';
+
+            // Determine which stage should be active based on max scroll reached (14 stages)
+            // Each stage represents approximately 7.14% of scroll (100% / 14 stages)
+            let newStage = 0;
+            if (maxScrollReached >= 92) {
+                newStage = 14;
+            } else if (maxScrollReached >= 85) {
+                newStage = 13;
+            } else if (maxScrollReached >= 78) {
+                newStage = 12;
+            } else if (maxScrollReached >= 71) {
+                newStage = 11;
+            } else if (maxScrollReached >= 64) {
+                newStage = 10;
+            } else if (maxScrollReached >= 57) {
+                newStage = 9;
+            } else if (maxScrollReached >= 50) {
+                newStage = 8;
+            } else if (maxScrollReached >= 43) {
+                newStage = 7;
+            } else if (maxScrollReached >= 36) {
+                newStage = 6;
+            } else if (maxScrollReached >= 29) {
+                newStage = 5;
+            } else if (maxScrollReached >= 22) {
+                newStage = 4;
+            } else if (maxScrollReached >= 15) {
+                newStage = 3;
+            } else if (maxScrollReached >= 8) {
+                newStage = 2;
+            } else {
+                newStage = 1;
+            }
+
+            // Update stage if it's higher than current
+            if (newStage > currentStage) {
+                // Remove active class from all stages
+                for (let i = 1; i <= 14; i++) {
+                    document.getElementById('stage' + i).classList.remove('active');
+                }
+                
+                // Add active class to new stage
+                currentStage = newStage;
+                document.getElementById('stage' + currentStage).classList.add('active');
+            }
+
+            // Show/hide progress section and surprise button (button replaces progress when >= 92%)
+            const progressSection = document.getElementById('progressSection');
+            const surpriseButton = document.getElementById('surpriseButton');
+            
+            if (maxScrollReached >= 92) {
+                // Hide progress section, show button
+                progressSection.classList.add('hidden');
+                surpriseButton.classList.add('show');
+            } else {
+                // Show progress section, hide button
+                progressSection.classList.remove('hidden');
+                surpriseButton.classList.remove('show');
+            }
+        }
+
+        // Reset plant on page load/refresh
+        resetPlantGrowth();
+
+        // Scroll to top on page load to ensure fresh start
+        window.scrollTo(0, 0);
+
+        // Initial call to update based on current scroll position
+        updatePlantGrowth();
+
+        // Listen for scroll events
+        window.addEventListener('scroll', updatePlantGrowth);
+        window.addEventListener('resize', updatePlantGrowth);
+    </script>
+</body>
+</html>
