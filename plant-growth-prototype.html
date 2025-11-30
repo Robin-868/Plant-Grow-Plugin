@@ -41,8 +41,8 @@
         /* Plant Widget Container */
         .plant-widget {
             position: fixed;
-            bottom: 20px;
-            left: 20px;
+            bottom: 110px;
+            left: -10px;
             width: 180px;
             background: transparent;
             border-radius: 12px;
@@ -83,6 +83,8 @@
             pointer-events: none;
         }
 
+        /* COMMENTED OUT - Surprise text styling (can be restored later) */
+        /*
         .surprise-text {
             font-size: 7px;
             color: #e74c3c;
@@ -90,27 +92,30 @@
             margin-bottom: 3px;
             text-align: center;
         }
+        */
 
         .progress-bar-container {
-            width: 100%;
-            height: 3px;
+            width: 30%;
+            height: 5px;
             background: #ecf0f1;
-            border-radius: 2px;
+            border-radius: 3px;
             overflow: hidden;
             margin-bottom: 2px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .progress-bar {
             height: 100%;
-            background: linear-gradient(to right, #2ecc71, #27ae60);
+            background: linear-gradient(to right, #d131c9, #d131c9);
             width: 0%;
             transition: width 0.3s ease;
             border-radius: 2px;
         }
 
         .progress-text {
-            font-size: 7px;
-            color: #7f8c8d;
+            font-size: 9px;
+            color: #3b3b3b;
             text-align: center;
         }
 
@@ -151,7 +156,8 @@
             object-fit: contain;
         }
 
-        /* Surprise Button - Small, positioned below plant */
+        /* COMMENTED OUT - Surprise Button styling (can be restored later) */
+        /*
         .surprise-button {
             width: 100%;
             padding: 5px 8px;
@@ -193,6 +199,47 @@
                 box-shadow: 0 4px 20px rgba(233, 30, 99, 0.8);
             }
         }
+        */
+
+        /* Hide widget on mobile devices - only show on desktop and tablet */
+        @media (max-width: 768px) {
+            .plant-widget {
+                display: none !important;
+            }
+        }
+
+        /* COMMENTED OUT - Mobile Responsive Styles (can be restored later) */
+        /*
+        @media (max-width: 768px) {
+            .plant-widget {
+                width: 100px;
+                height: 130px;
+                background: #add7ff94;
+                padding: 1px;
+                justify-content: center;
+                align-items: center;
+                border-radius: 12px;
+                left: auto;
+                right: -10px;
+            }
+
+            .plant-container {
+                height: 130px;
+            }
+
+            .plant-stage {
+                width: 110px;
+            }
+
+            .progress-text {
+                font-size: 7px;
+            }
+
+            .progress-bar-container {
+                height: 4px;
+            }
+        }
+        */
     </style>
 </head>
 <body>
@@ -464,17 +511,20 @@
         <div class="bottom-section">
             <!-- Progress Section - Below plant, hidden when >90% -->
             <div class="progress-section" id="progressSection">
-                <div class="surprise-text">Surprise loading...</div>
+                <!-- COMMENTED OUT - Surprise loading text (can be restored later) -->
+                <!-- <div class="surprise-text">Surprise loading...</div> -->
                 <div class="progress-bar-container">
                     <div class="progress-bar" id="progressBar"></div>
                 </div>
                 <div class="progress-text" id="progressText">0%</div>
             </div>
 
-            <!-- Surprise Button - Replaces progress bar when >90% -->
+            <!-- COMMENTED OUT - Surprise Button (can be restored later) -->
+            <!--
             <button class="surprise-button" id="surpriseButton" onclick="window.open('https://example.com', '_blank')">
                 Surprise! Click Me! 
             </button>
+            -->
         </div>
     </div>
 
@@ -519,9 +569,10 @@
 
             // Show progress section, hide surprise button
             const progressSection = document.getElementById('progressSection');
-            const surpriseButton = document.getElementById('surpriseButton');
+            // COMMENTED OUT - Surprise button code (can be restored later)
+            // const surpriseButton = document.getElementById('surpriseButton');
             progressSection.classList.remove('hidden');
-            surpriseButton.classList.remove('show');
+            // surpriseButton.classList.remove('show');
         }
 
         function updatePlantGrowth() {
@@ -588,17 +639,22 @@
 
             // Show/hide progress section and surprise button (button replaces progress when >= 92%)
             const progressSection = document.getElementById('progressSection');
-            const surpriseButton = document.getElementById('surpriseButton');
+            // COMMENTED OUT - Surprise button code (can be restored later)
+            // const surpriseButton = document.getElementById('surpriseButton');
             
-            if (maxScrollReached >= 92) {
-                // Hide progress section, show button
-                progressSection.classList.add('hidden');
-                surpriseButton.classList.add('show');
-            } else {
-                // Show progress section, hide button
-                progressSection.classList.remove('hidden');
-                surpriseButton.classList.remove('show');
-            }
+            // COMMENTED OUT - Button show/hide logic (can be restored later)
+            // if (maxScrollReached >= 92) {
+            //     // Hide progress section, show button
+            //     progressSection.classList.add('hidden');
+            //     surpriseButton.classList.add('show');
+            // } else {
+            //     // Show progress section, hide button
+            //     progressSection.classList.remove('hidden');
+            //     surpriseButton.classList.remove('show');
+            // }
+            
+            // Progress section always visible (since button is commented out)
+            progressSection.classList.remove('hidden');
         }
 
         // Reset plant on page load/refresh
